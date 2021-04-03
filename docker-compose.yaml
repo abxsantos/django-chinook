@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: chinook-docker-tutorial-db
+    image: postgres:12.6-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=chinook
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+    - ./pgdata:/var/lib/postgresql/data
+    networks:
+      - chinook-docker-tutorial
+
+  app:
+    container_name: chinook-docker-tutorial
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    env_file: .env
+    volumes:
+      - .:/home/docker
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    networks:
+      - chinook-docker-tutorial
+
+networks:
+    chinook-docker-tutorial:
